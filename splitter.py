@@ -21,7 +21,7 @@ class splitter:
             dev = data_split(tasker, start, end, test=True, all_edges=True)
         else:
             dev = data_split(tasker, start, end, test=True)
-
+        #print(dev)
         dev = DataLoader(dev, num_workers=args.data_loading_params['num_workers'])
 
         start = end
@@ -61,4 +61,5 @@ class data_split(Dataset):
     def __getitem__(self, idx):
         idx = self.start + idx
         t = self.tasker.get_sample(idx, test=self.test, **self.kwargs)
+        #print(t)
         return t

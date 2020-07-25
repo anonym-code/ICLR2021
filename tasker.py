@@ -18,31 +18,26 @@ class Edge_Cls_Tasker:
         if self.data.node_feature:
             node_feature = self.data.node_feature
         else:
-            node_feature = None
+            node_feature = 1
         for i in range(idx - self.args.num_hist_steps, idx + 1):
             cur_adj = tu.get_sp_adj(edges=self.data.edges,
                                     time=i,
                                     weighted=True,
                                     time_window=self.args.adj_mat_time_window)
-            node_mask = tu.get_node_mask(cur_adj, self.data.num_nodes)
             cur_adj = tu.normalize_adj(adj=cur_adj, num_nodes=self.data.num_nodes)
 
             hist_adj_list.append(cur_adj)
-            hist_mask_list.append(node_mask)
 
         label_adj = tu.get_edge_labels(edges=self.data.edges,
                                        time=idx)
         concate_adj = torch.sum(hist_adj_list)
         concate_adj[concate_adj > 0] = 1
         edge_feature = torch.cat(hist_adj_list, dim=0).permute(1,2,0)
-        node_mask = torch.sum(hist_mask_list)
-        node_mask[node_mask > 0] = 1
         return {'idx': idx,
                 'label_sp': label_adj,
                 'concate_adj': concate_adj,
                 'edge_feature': edge_feature,
-                'node_feature': node_feature,
-                'node_mask': node_mask}
+                'node_feature': node_feature}
 
 
 class Node_Cls_Tasker:
@@ -70,7 +65,7 @@ class Node_Cls_Tasker:
         if self.data.node_feature:
             node_feature = self.data.node_feature
         else:
-            node_feature = None
+            node_feature = 1
         for i in range(idx - self.args.num_hist_steps, idx+1):
             #all edgess included from the beginning
             cur_adj = tu.get_sp_adj(edges = self.data.edges,
@@ -78,7 +73,6 @@ class Node_Cls_Tasker:
                                     weighted = True,
                                     time_window = self.args.adj_mat_time_window) #changed this to keep only a time window
 
-            node_mask = tu.get_node_mask(cur_adj, self.data.num_nodes)
             cur_adj = tu.normalize_adj(adj = cur_adj, num_nodes = self.data.num_nodes)
 
             hist_adj_list.append(cur_adj)
@@ -88,13 +82,10 @@ class Node_Cls_Tasker:
         concate_adj = torch.sum(hist_adj_list)
         concate_adj[concate_adj > 0] = 1
         edge_feature = torch.cat(hist_adj_list, dim=0).permute(1, 2, 0)
-        node_mask = torch.sum(hist_mask_list)
-        node_mask[node_mask > 0] = 1
         return {'idx': idx,
                 'concate_adj': concate_adj,
                 'edge_feature': edge_feature,
                 'label_sp': label_adj,
-                'node_mask': node_mask,
                 'node_feature': node_feature}
 
 
@@ -143,32 +134,28 @@ class Link_Pred_Tasker:
 
     def get_sample(self, idx, test, **kwargs):
         hist_adj_list = []
-        hist_mask_list = []
         existing_nodes = []
         for i in range(idx - self.args.num_hist_steps, idx + 1):
             cur_adj = tu.get_sp_adj(edges=self.data.edges,
                                     time=i,
                                     weighted=True,
                                     time_window=self.args.adj_mat_time_window)
-
             if self.args.smart_neg_sampling:
                 existing_nodes.append(cur_adj['idx'].unique())
             else:
                 existing_nodes = None
 
-            node_mask = tu.get_node_mask(cur_adj, self.data.num_nodes)
-
+            #node_mask = tu.get_node_mask(cur_adj, self.data.num_nodes)
 
             cur_adj = tu.normalize_adj(adj=cur_adj, num_nodes=self.data.num_nodes)
-
+            cur_adj = torch.sparse.FloatTensor(cur_adj['idx'].T, cur_adj['vals']).to_dense()
             hist_adj_list.append(cur_adj)
-            hist_mask_list.append(node_mask)
 
-        concate_adj = torch.sum(hist_adj_list)
+        edge_feature = torch.cat(hist_adj_list).view(-1, cur_adj.size(0), cur_adj.size(1))
+        concate_adj = torch.sum(edge_feature, dim=0)
+        edge_feature = edge_feature.permute(1, 2, 0)
         concate_adj[concate_adj > 0] = 1
-        edge_feature = torch.cat(hist_adj_list, dim=0).permute(1, 2, 0)
-        node_mask = torch.sum(hist_mask_list)
-        node_mask[node_mask > 0] = 1
+
         # This would be if we were training on all the edges in the time_window
         label_adj = tu.get_sp_adj(edges=self.data.edges,
                                   time=idx + 1,
@@ -198,8 +185,6 @@ class Link_Pred_Tasker:
                 'concate_adj': concate_adj,
                 'edge_feature': edge_feature,
                 'label_sp': label_adj,
-                'node_mask': node_mask,
-                'node_feature': None}
-
+                'node_feature': 1}
 
 

@@ -1,11 +1,7 @@
 import torch
 import utils as u
 import torch.nn as nn
-import torch.nn.Functional as f
-from collections import OrderedDict
-import math
-import numpy as np
-import matplotlib.pyplot as plt
+
 
 
 class EGNNConv(nn.Module):
@@ -16,24 +12,27 @@ class EGNNConv(nn.Module):
 
     def forward(self, X, E):
         X = self.lin1(X)
-        X = torch.einsum('ijp,jk->ikp', E, X)
-        X = torch.cat(X, dim=-1)
+        X = torch.einsum('ijp,jk->ipk', E, X)
+        X = X.view(X.size(0), -1)
         newX = self.ELU(X)
         return newX
 
 
 class EGNNC(nn.Module):
-    def __init__(self, in_dim, hidden_dim, out_dim, edge_dim, num_node, normalize='True', dropout=0.1):
+    def __init__(self, in_dim, hidden_dim, out_dim, edge_dim, num_node, normalize='False', dropout=0.1):
         super().__init__()
         self.Embed = nn.Embedding(num_node, in_dim)
-        self.Conv1 = EGNNConv(node_in_dim=in_dim, hidden_dim=hidden_dim)
+        self.Conv1 = EGNNConv(in_dim=in_dim, out_dim=hidden_dim)
         self.Dropout = nn.Dropout(dropout)
-        self.Conv2 = EGNNConv(node_in_dim=hidden_dim*edge_dim, hidden_dim=hidden_dim)
+        self.Conv2 = EGNNConv(in_dim=hidden_dim*edge_dim, out_dim=hidden_dim)
         self.lin = nn.Linear(hidden_dim*edge_dim, out_dim)
         self.normalize = normalize
 
-    def forward(self, E, node_ids):
-        X = self.Embed(node_ids)
+    def forward(self, E, node_ids, node_feature=None):
+        if node_feature != None:
+            X = node_feature
+        else:
+            X = self.Embed(node_ids)
         if self.normalize:
             E = u.DS_normalize(E)
         X = self.Dropout(self.Conv1(X, E))

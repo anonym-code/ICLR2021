@@ -81,8 +81,8 @@ class sbm:
 
         # random node features
         self.num_nodes = int(self.get_num_nodes(edges))
-        self.feats_per_node = args.sbm_args.feats_per_node
-        self.nodes_feats = torch.rand((self.num_nodes, self.feats_per_node))
+        #self.feats_per_node = args.sbm_args.feats_per_node
+        #self.nodes_feats = torch.rand((self.num_nodes, self.feats_per_node))
 
         self.num_non_existing = self.num_nodes ** 2 - edges.size(0)
 

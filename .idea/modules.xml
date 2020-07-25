@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/EvolveGCN.iml" filepath="$PROJECT_DIR$/.idea/EvolveGCN.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../EvolveGCN2/.idea/EvolveGCN2.iml" filepath="$PROJECT_DIR$/../EvolveGCN2/.idea/EvolveGCN2.iml" />
     </modules>
   </component>
 </project>

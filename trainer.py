@@ -89,17 +89,12 @@ class Trainer:
 
         torch.set_grad_enabled(grad)
         for s in split:
-            if self.tasker.is_static:
-                s = self.prepare_static_sample(s)
-            else:
-                s = self.prepare_sample(s)
-
+            s = self.prepare_sample(s)
             predictions, nodes_embs = self.predict(s.edge_feature,
                                                    s.label_sp['idx'],
                                                    s.node_feature)
 
             loss = self.comp_loss(predictions, s.label_sp['vals'])
-            # print(loss)
             if set_name in ['TEST', 'VALID'] and self.args.task == 'link_pred':
                 self.logger.log_minibatch(predictions, s.label_sp['vals'], loss.detach(), adj=s.label_sp['idx'])
             else:
@@ -118,15 +113,15 @@ class Trainer:
 
         for node_set in node_indices:
             cls_input.append(nodes_embs[node_set])
-        print(cls_input)
         return torch.cat(cls_input, dim=1)
 
 
     def predict(self, edge_feature, node_indices, node_feature):
-        if self.args.task != 'node_cls':
-            nodes_embs = self.gcn(edge_feature)
+        if node_feature == 1:
+            nodes_embs = self.gcn(edge_feature.to(self.args.device), torch.arange(self.tasker.data.num_nodes).to(self.args.device))
         else:
-            nodes_embs = self.gcn(node_feature, edge_feature)
+            nodes_embs = self.gcn(edge_feature.to(self.args.device), torch.arange(self.tasker.data.num_nodes).to(self.args.device),
+                                  node_feature.to(self.args.device))
         predict_batch_size = 100000
         gather_predictions = []
         for i in range(1 + (node_indices.size(1) // predict_batch_size)):
@@ -152,17 +147,7 @@ class Trainer:
 
     def prepare_sample(self, sample):
         sample = u.Namespace(sample)
-        for i, adj in enumerate(sample.hist_adj_list):
-            adj = u.sparse_prepare_tensor(adj, torch_size=[self.num_nodes])
-            sample.hist_adj_list[i] = adj.to(self.args.device)
-
-            nodes = self.tasker.prepare_node_feats(sample.hist_ndFeats_list[i])
-
-            sample.hist_ndFeats_list[i] = nodes.to(self.args.device)
-            node_mask = sample.node_mask_list[i]
-            sample.node_mask_list[i] = node_mask.to(
-                self.args.device).t()  # transposed to have same dimensions as scorer
-
+        sample.edge_feature = sample.edge_feature.squeeze()
         label_sp = self.ignore_batch_dim(sample.label_sp)
 
         if self.args.task in ["link_pred", "edge_cls"]:
@@ -190,4 +175,3 @@ class Trainer:
             csv_node_embs.append(torch.cat((orig_ID, nodes_embs[node_id].double())).detach().numpy())
 
         pd.DataFrame(np.array(csv_node_embs)).to_csv(file_name, header=None, index=None, compression='gzip')
-    # print ('Node embs saved in',file_name)

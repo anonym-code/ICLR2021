@@ -43,7 +43,7 @@ def build_classifier(args, tasker):
         mult = 1
     else:
         mult = 2
-    return Classifier(args, in_features=args.gcn_out_feature * mult, out_features=tasker.num_classes).to(args.device)
+    return Classifier(args, in_features=args.gcn_out_feats * mult, out_features=tasker.num_classes).to(args.device)
 
 if __name__ == '__main__':
     parser = u.create_parser()
@@ -54,7 +54,11 @@ if __name__ == '__main__':
     dataset = build_dataset(args)
     tasker = build_tasker(args, dataset)
     splitter = splitter(args, tasker)
-    gcn = EGNNC(args.feature_per_node, args.hidden_feats, args.num_hist_steps, args.num_node).to(args.device)
+    gcn = EGNNC(args.feats_per_node,
+                args.hidden_feats,
+                args.gcn_out_feats,
+                args.num_hist_steps + 1,
+                tasker.data.num_nodes).to(args.device)
     classifier = build_classifier(args, tasker)
     loss = nn.CrossEntropyLoss()
     trainer = Trainer(args,

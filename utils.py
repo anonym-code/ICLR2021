@@ -158,6 +158,7 @@ def parse_args(parser):
     return args
 
 def DS_normalize(edge_feature):
+    assert len(edge_feature.size()) == 3
     E1 = edge_feature / torch.sum(edge_feature, 1, keepdim=True)
     E2 = E1 / torch.sum(E1, 0, keepdim=True)
     normalizedE = torch.einsum('ikp,jkp->ijp', E1, E2)
