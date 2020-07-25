@@ -19,7 +19,7 @@ class EGNNConv(nn.Module):
 
 
 class EGNNC(nn.Module):
-    def __init__(self, in_dim, hidden_dim, out_dim, edge_dim, num_node, normalize='False', dropout=0.1):
+    def __init__(self, in_dim, hidden_dim, out_dim, edge_dim, num_node, normalize=False, dropout=0.1):
         super().__init__()
         self.Embed = nn.Embedding(num_node, in_dim)
         self.Conv1 = EGNNConv(in_dim=in_dim, out_dim=hidden_dim)

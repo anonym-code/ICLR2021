@@ -65,11 +65,11 @@ class Trainer:
                 if eval_valid > best_eval_valid:
                     best_eval_valid = eval_valid
                     epochs_without_impr = 0
-                    print('### w' + str(self.args.rank) + ') ep ' + str(e) + ' - Best valid measure:' + str(eval_valid))
+                    print('### w' + ') ep ' + str(e) + ' - Best valid measure:' + str(eval_valid))
                 else:
                     epochs_without_impr += 1
                     if epochs_without_impr > self.args.early_stop_patience:
-                        print('### w' + str(self.args.rank) + ') ep ' + str(e) + ' - Early stop.')
+                        print('### w' + ') ep ' + str(e) + ' - Early stop.')
                         break
 
             if len(self.splitter.test) > 0 and eval_valid == best_eval_valid and e > self.args.eval_after_epochs:
@@ -92,7 +92,8 @@ class Trainer:
             s = self.prepare_sample(s)
             predictions, nodes_embs = self.predict(s.edge_feature,
                                                    s.label_sp['idx'],
-                                                   s.node_feature)
+                                                   s.node_feature,
+                                                   set_name)
 
             loss = self.comp_loss(predictions, s.label_sp['vals'])
             if set_name in ['TEST', 'VALID'] and self.args.task == 'link_pred':
@@ -116,7 +117,11 @@ class Trainer:
         return torch.cat(cls_input, dim=1)
 
 
-    def predict(self, edge_feature, node_indices, node_feature):
+    def predict(self, edge_feature, node_indices, node_feature, set_name):
+        if set_name == 'TEST' or 'VALID':
+            self.gcn.eval()
+        else:
+            self.gcn.train()
         if node_feature == 1:
             nodes_embs = self.gcn(edge_feature.to(self.args.device), torch.arange(self.tasker.data.num_nodes).to(self.args.device))
         else:

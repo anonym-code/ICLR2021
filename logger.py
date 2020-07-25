@@ -113,7 +113,6 @@ class Logger():
         self.errors.append(error)
         self.MRRs.append(MRR)
         self.MAPs.append(MAP)
-        print('{} epochs:{}, loss: {}, MAP: {}'.format(self.set, self.epoch, loss, MAP))
         for cl in range(self.num_classes):
             self.conf_mat_tp[cl]+=conf_mat_per_class.true_positives[cl]
             self.conf_mat_fn[cl]+=conf_mat_per_class.false_negatives[cl]
@@ -199,7 +198,7 @@ class Logger():
                 cl_precision, cl_recall, cl_f1 = self.calc_eval_measures_per_class(self.conf_mat_tp_at_k[k], self.conf_mat_fn_at_k[k], self.conf_mat_fp_at_k[k], cl)
                 logging.info (self.set+' measures@%d for class %d - precision %0.4f - recall %0.4f - f1 %0.4f ' % (k, cl,cl_precision,cl_recall,cl_f1))
 
-
+        print('{} epochs:{}, mean_loss: {}, MAP: {}'.format(self.set, self.epoch, self.losses.mean(), epoch_MAP))
         logging.info (self.set+' Total epoch time: '+ str(((time.monotonic()-self.ep_time))))
 
         return eval_measure

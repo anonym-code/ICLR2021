@@ -11,6 +11,7 @@ class splitter:
         end = args.train_proportion
 
         end = int(np.floor(tasker.data.max_time.type(torch.float) * end))
+        print(start, )
         train = data_split(tasker, start, end, test=False)
         train = DataLoader(train, **args.data_loading_params)
 

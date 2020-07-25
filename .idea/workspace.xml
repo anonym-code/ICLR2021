@@ -9,6 +9,7 @@
       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/datasets.py" beforeDir="false" afterPath="$PROJECT_DIR$/datasets.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/logger.py" beforeDir="false" afterPath="$PROJECT_DIR$/logger.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/splitter.py" beforeDir="false" afterPath="$PROJECT_DIR$/splitter.py" afterDir="false" />
@@ -108,7 +109,7 @@
       <workItem from="1595083299648" duration="4000" />
       <workItem from="1595084305307" duration="20329000" />
       <workItem from="1595338903768" duration="17292000" />
-      <workItem from="1595428965160" duration="25518000" />
+      <workItem from="1595428965160" duration="30974000" />
     </task>
     <servers />
   </component>
