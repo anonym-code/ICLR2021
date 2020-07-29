@@ -4,8 +4,8 @@ from splitter import splitter
 from trainer import Trainer
 from tasker import Edge_Cls_Tasker, Node_Cls_Tasker, Link_Pred_Tasker
 import torch.nn as nn
-from loss import Cross_Entropy
 import utils as u
+import torch
 import logger
 
 def build_dataset(args):
@@ -60,7 +60,7 @@ if __name__ == '__main__':
                 args.num_hist_steps + 1,
                 tasker.data.num_nodes).to(args.device)
     classifier = build_classifier(args, tasker)
-    loss = nn.CrossEntropyLoss()
+    loss = nn.CrossEntropyLoss(weight=torch.Tensor(args.class_weights).to('cuda'))
     trainer = Trainer(args,
                       splitter=splitter,
                       gcn=gcn,

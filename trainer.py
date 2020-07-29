@@ -94,7 +94,7 @@ class Trainer:
                                                    s.label_sp['idx'],
                                                    s.node_feature,
                                                    set_name)
-
+            #print((s.label_sp['vals']==1).sum(), s.label_sp['vals'].size())
             loss = self.comp_loss(predictions, s.label_sp['vals'])
             if set_name in ['TEST', 'VALID'] and self.args.task == 'link_pred':
                 self.logger.log_minibatch(predictions, s.label_sp['vals'], loss.detach(), adj=s.label_sp['idx'])
@@ -111,7 +111,6 @@ class Trainer:
 
     def gather_node_embs(self, nodes_embs, node_indices):
         cls_input = []
-
         for node_set in node_indices:
             cls_input.append(nodes_embs[node_set])
         return torch.cat(cls_input, dim=1)
@@ -131,8 +130,7 @@ class Trainer:
         gather_predictions = []
         for i in range(1 + (node_indices.size(1) // predict_batch_size)):
             cls_input = self.gather_node_embs(nodes_embs,
-                                              node_indices[:, i * predict_batch_size: min((i + 1) * predict_batch_size,
-                                                                                          node_indices.size(1))])
+                                              node_indices[:,  i*predict_batch_size:(i+1)*predict_batch_size])
             predictions = self.classifier(cls_input)
             gather_predictions.append(predictions)
         gather_predictions = torch.cat(gather_predictions, dim=0)

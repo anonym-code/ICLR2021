@@ -35,12 +35,12 @@ num_hist_steps: 10
 
 data_loading_params:
   batch_size: 1  # should be always 1
-  num_workers: 8
+  num_workers: 0
 
 gcn_parameters:
   cls_feats: 100 # Hidden size of the classifier
 
-feats_per_node: 128
-hidden_feats: 128
-gcn_out_feats: 256
+feats_per_node: 100
+hidden_feats: 64
+gcn_out_feats: 128
 
