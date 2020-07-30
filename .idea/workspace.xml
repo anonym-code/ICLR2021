@@ -2,13 +2,15 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="ffd3342c-28cd-4970-b956-598be12efbb5" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/experiments/reddit.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiments/bitcoinalpha.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/bitcoinalpha.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/experiments/bitcoinotc.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/bitcoinotc.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/loss.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/as.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/as.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/experiments/parameters_example.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/experiments/parameters_example.yaml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trainer.py" beforeDir="false" afterPath="$PROJECT_DIR$/trainer.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/model.py" beforeDir="false" afterPath="$PROJECT_DIR$/model.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run.sh" beforeDir="false" afterPath="$PROJECT_DIR$/run.sh" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/tasker.py" beforeDir="false" afterPath="$PROJECT_DIR$/tasker.py" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -33,7 +35,7 @@
   <component name="PropertiesComponent">
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../EvolveGCN2" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
   <component name="RecentsManager">
@@ -42,6 +44,7 @@
       <recent name="$PROJECT_DIR$" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/../EvolveGCN2" />
       <recent name="$PROJECT_DIR$" />
       <recent name="$PROJECT_DIR$/experiments" />
     </key>
@@ -103,7 +106,7 @@
       <workItem from="1595083299648" duration="4000" />
       <workItem from="1595084305307" duration="20329000" />
       <workItem from="1595338903768" duration="17292000" />
-      <workItem from="1595428965160" duration="53934000" />
+      <workItem from="1595428965160" duration="72801000" />
     </task>
     <servers />
   </component>
@@ -125,5 +128,6 @@
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/EvolveGCN$utils.coverage" NAME="utils Coverage Results" MODIFIED="1595147318205" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/DynamicGCN$utils.coverage" NAME="utils Coverage Results" MODIFIED="1596036600591" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>

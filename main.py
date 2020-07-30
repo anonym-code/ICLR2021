@@ -57,7 +57,7 @@ if __name__ == '__main__':
     gcn = EGNNC(args.feats_per_node,
                 args.hidden_feats,
                 args.gcn_out_feats,
-                args.num_hist_steps + 1,
+                args.num_hist_steps,
                 tasker.data.num_nodes).to(args.device)
     classifier = build_classifier(args, tasker)
     loss = nn.CrossEntropyLoss(weight=torch.Tensor(args.class_weights).to('cuda'))

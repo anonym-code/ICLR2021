@@ -1,7 +1,8 @@
 import torch
 import taskers_utils as tu
 import utils as u
-
+from scipy.fftpack import dctn, idctn
+import numpy as np
 
 class Edge_Cls_Tasker:
     def __init__(self, args, dataset):
@@ -135,23 +136,46 @@ class Link_Pred_Tasker:
     def get_sample(self, idx, test, **kwargs):
         hist_adj_list = []
         existing_nodes = []
-        for i in range(idx - self.args.num_hist_steps, idx + 1):
-            cur_adj = tu.get_sp_adj(edges=self.data.edges,
-                                    time=i,
-                                    weighted=True,
-                                    time_window=self.args.adj_mat_time_window)
-            if self.args.smart_neg_sampling:
-                existing_nodes.append(cur_adj['idx'].unique())
-            else:
-                existing_nodes = None
+        if self.args.fft:
+            for i in range(idx + 1):
+                cur_adj = tu.get_sp_adj(edges=self.data.edges,
+                                        time=i,
+                                        weighted=True,
+                                        time_window=self.args.adj_mat_time_window)
+                if self.args.smart_neg_sampling:
+                    existing_nodes.append(cur_adj['idx'].unique())
+                else:
+                    existing_nodes = None
 
-            #node_mask = tu.get_node_mask(cur_adj, self.data.num_nodes)
+                # node_mask = tu.get_node_mask(cur_adj, self.data.num_nodes)
 
-            cur_adj = tu.normalize_adj(adj=cur_adj, num_nodes=self.data.num_nodes)
-            cur_adj = torch.sparse.FloatTensor(cur_adj['idx'].T, cur_adj['vals']).to_dense()
-            hist_adj_list.append(cur_adj)
+                cur_adj = tu.normalize_adj(adj=cur_adj, num_nodes=self.data.num_nodes)
+                cur_adj = torch.sparse.FloatTensor(cur_adj['idx'].T, cur_adj['vals']).to_dense().numpy()
+                hist_adj_list.append(cur_adj)
+            hist_adj_list = np.concatenate(hist_adj_list).reshape((-1, cur_adj.shape[0], cur_adj.shape[1]))
+            #print(1, hist_adj_list.shape)
+            f_adj = dctn(hist_adj_list, axes=0, norm='ortho')
+            edge_feature = torch.from_numpy(f_adj[:self.args.num_hist_steps, :, :])
+            #print(2, edge_feature.size())
 
-        edge_feature = torch.cat(hist_adj_list).view(-1, cur_adj.size(0), cur_adj.size(1))
+        else:
+            for i in range(idx - self.args.num_hist_steps, idx + 1):
+                cur_adj = tu.get_sp_adj(edges=self.data.edges,
+                                        time=i,
+                                        weighted=True,
+                                        time_window=self.args.adj_mat_time_window)
+                if self.args.smart_neg_sampling:
+                    existing_nodes.append(cur_adj['idx'].unique())
+                else:
+                    existing_nodes = None
+
+                #node_mask = tu.get_node_mask(cur_adj, self.data.num_nodes)
+
+                cur_adj = tu.normalize_adj(adj=cur_adj, num_nodes=self.data.num_nodes)
+                cur_adj = torch.sparse.FloatTensor(cur_adj['idx'].T, cur_adj['vals']).to_dense()
+                hist_adj_list.append(cur_adj)
+
+            edge_feature = torch.cat(hist_adj_list).view(-1, cur_adj.size(0), cur_adj.size(1))
         concate_adj = torch.sum(edge_feature, dim=0)
         edge_feature = edge_feature.permute(1, 2, 0)
         concate_adj[concate_adj > 0] = 1

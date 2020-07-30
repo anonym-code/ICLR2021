@@ -1,8 +1,8 @@
 import torch
 import utils as u
 import torch.nn as nn
-
-
+# from torch_geometric.nn import MassagePassing
+# from torch_geometric.utils import degree
 
 class EGNNConv(nn.Module):
     def __init__(self, in_dim, out_dim):

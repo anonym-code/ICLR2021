@@ -1,1 +1,1 @@
-CUDA_VISIBLE_DEVICES=1 python main.py --config_file ./experiments/bitcoinotc.yaml
+CUDA_VISIBLE_DEVICES=1 python main.py --config_file ./experiments/parameters_example.yaml
