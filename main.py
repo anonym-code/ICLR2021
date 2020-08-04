@@ -7,6 +7,7 @@ import torch.nn as nn
 import utils as u
 import torch
 import logger
+import Cross_Entropy as ce
 
 def build_dataset(args):
     if args.data == 'bitcoinotc' or args.data == 'bitcoinalpha':
@@ -17,7 +18,7 @@ def build_dataset(args):
         return Bitcoin(args)
     elif args.data == 'elliptic':
         return Elliptic(args)
-    elif args.data == 'uc_irv_mess':
+    elif args.data == 'UCI':
         return UCI(args)
     elif args.data == 'AS':
         return AS(args)
@@ -60,7 +61,7 @@ if __name__ == '__main__':
                 args.num_hist_steps,
                 tasker.data.num_nodes).to(args.device)
     classifier = build_classifier(args, tasker)
-    loss = nn.CrossEntropyLoss(weight=torch.Tensor(args.class_weights).to('cuda'))
+    loss = ce.Cross_Entropy(args, dataset).to('cuda')
     trainer = Trainer(args,
                       splitter=splitter,
                       gcn=gcn,

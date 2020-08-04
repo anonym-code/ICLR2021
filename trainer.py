@@ -72,7 +72,7 @@ class Trainer:
                         print('### w' + ') ep ' + str(e) + ' - Early stop.')
                         break
 
-            if len(self.splitter.test) > 0 and eval_valid == best_eval_valid and e > self.args.eval_after_epochs:
+            if len(self.splitter.test) > 0 and e > self.args.eval_after_epochs:
                 eval_test, _ = self.run_epoch(self.splitter.test, e, 'TEST', grad=False)
 
                 if self.args.save_node_embeddings:

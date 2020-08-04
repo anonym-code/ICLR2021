@@ -93,13 +93,13 @@ class Logger():
 
     def log_minibatch(self, predictions, true_classes, loss, **kwargs):
 
-        probs = torch.softmax(predictions,dim=1)[:,1]
+        probs = torch.softmax(predictions, dim=1)[:, 1]
         if self.set in ['TEST', 'VALID'] and self.args.task == 'link_pred':
-            MRR = self.get_MRR(probs,true_classes, kwargs['adj'],do_softmax=False)
+            MRR = self.get_MRR(predictions.argmax(dim=1), true_classes, kwargs['adj'],do_softmax=False)
         else:
             MRR = torch.tensor([0.0])
 
-        MAP = torch.tensor(self.get_MAP(probs,true_classes, do_softmax=False))
+        MAP = torch.tensor(self.get_MAP(predictions.argmax(dim=1), true_classes, do_softmax=False))
 
         error, conf_mat_per_class = self.eval_predicitions(predictions, true_classes, self.num_classes)
         conf_mat_per_class_at_k={}
@@ -198,7 +198,7 @@ class Logger():
                 cl_precision, cl_recall, cl_f1 = self.calc_eval_measures_per_class(self.conf_mat_tp_at_k[k], self.conf_mat_fn_at_k[k], self.conf_mat_fp_at_k[k], cl)
                 logging.info (self.set+' measures@%d for class %d - precision %0.4f - recall %0.4f - f1 %0.4f ' % (k, cl,cl_precision,cl_recall,cl_f1))
 
-        print('{} epochs:{}, mean_loss: {}, MAP: {}'.format(self.set, self.epoch, self.losses.mean(), epoch_MAP))
+        print('{} epochs:{}, mean_loss: {}, MAP: {}, MRR: {}'.format(self.set, self.epoch, self.losses.mean(), epoch_MAP, epoch_MRR))
         logging.info (self.set+' Total epoch time: '+ str(((time.monotonic()-self.ep_time))))
 
         return eval_measure
