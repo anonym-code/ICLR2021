@@ -205,7 +205,7 @@ class Logger():
                 cl_precision, cl_recall, cl_f1 = self.calc_eval_measures_per_class(self.conf_mat_tp_at_k[k], self.conf_mat_fn_at_k[k], self.conf_mat_fp_at_k[k], cl)
                 logging.info (self.set+' measures@%d for class %d - precision %0.4f - recall %0.4f - f1 %0.4f ' % (k, cl,cl_precision,cl_recall,cl_f1))
 
-        print('{} epochs:{}, mean_loss: {}, MAP: {}, AUC: {}'.format(self.set, self.epoch, self.losses.mean(), epoch_MAP, epoch_AUC))
+        print('{} epochs:{}, mean_loss: {}, MAP: {}, MRR: {}, AUC: {}'.format(self.set, self.epoch, self.losses.mean(), epoch_MAP, epoch_MRR, epoch_AUC))
         logging.info (self.set+' Total epoch time: '+ str(((time.monotonic()-self.ep_time))))
 
         return eval_measure
