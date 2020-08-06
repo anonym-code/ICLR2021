@@ -6,7 +6,7 @@ import torch
 import utils
 import matplotlib.pyplot as plt
 import time
-from sklearn.metrics import average_precision_score
+from sklearn.metrics import average_precision_score, roc_auc_score
 from scipy.sparse import coo_matrix
 import numpy as np
 
@@ -52,6 +52,7 @@ class Logger():
         self.errors = []
         self.MRRs = []
         self.MAPs = []
+        self.AUCs = []
         #self.time_step_sizes = []
         self.conf_mat_tp = {}
         self.conf_mat_fn = {}
@@ -98,7 +99,7 @@ class Logger():
             MRR = self.get_MRR(predictions.argmax(dim=1), true_classes, kwargs['adj'],do_softmax=False)
         else:
             MRR = torch.tensor([0.0])
-
+        AUC = torch.tensor(self.get_AUC(predictions.argmax(dim=1), true_classes))
         MAP = torch.tensor(self.get_MAP(predictions.argmax(dim=1), true_classes, do_softmax=False))
 
         error, conf_mat_per_class = self.eval_predicitions(predictions, true_classes, self.num_classes)
@@ -113,6 +114,7 @@ class Logger():
         self.errors.append(error)
         self.MRRs.append(MRR)
         self.MAPs.append(MAP)
+        self.AUCs.append(AUC)
         for cl in range(self.num_classes):
             self.conf_mat_tp[cl]+=conf_mat_per_class.true_positives[cl]
             self.conf_mat_fn[cl]+=conf_mat_per_class.false_negatives[cl]
@@ -161,11 +163,16 @@ class Logger():
 
         epoch_MRR = self.calc_epoch_metric(self.batch_sizes, self.MRRs)
         epoch_MAP = self.calc_epoch_metric(self.batch_sizes, self.MAPs)
+        epoch_AUC = self.calc_epoch_metric(self.batch_sizes, self.AUCs)
         logging.info(self.set+' mean MRR '+ str(epoch_MRR)+' - mean MAP '+ str(epoch_MAP))
         if self.args.target_measure=='MRR' or self.args.target_measure=='mrr':
             eval_measure = epoch_MRR
         if self.args.target_measure=='MAP' or self.args.target_measure=='map':
             eval_measure = epoch_MAP
+        if self.args.target_measure=='AUC' or self.args.target_measure=='auc':
+            eval_measure = AUC
+
+
 
         logging.info(self.set+' tp %s,fn %s,fp %s' % (self.conf_mat_tp, self.conf_mat_fn, self.conf_mat_fp))
         precision, recall, f1 = self.calc_microavg_eval_measures(self.conf_mat_tp, self.conf_mat_fn, self.conf_mat_fp)
@@ -198,7 +205,7 @@ class Logger():
                 cl_precision, cl_recall, cl_f1 = self.calc_eval_measures_per_class(self.conf_mat_tp_at_k[k], self.conf_mat_fn_at_k[k], self.conf_mat_fp_at_k[k], cl)
                 logging.info (self.set+' measures@%d for class %d - precision %0.4f - recall %0.4f - f1 %0.4f ' % (k, cl,cl_precision,cl_recall,cl_f1))
 
-        print('{} epochs:{}, mean_loss: {}, MAP: {}, MRR: {}'.format(self.set, self.epoch, self.losses.mean(), epoch_MAP, epoch_MRR))
+        print('{} epochs:{}, mean_loss: {}, MAP: {}, AUC: {}'.format(self.set, self.epoch, self.losses.mean(), epoch_MAP, epoch_AUC))
         logging.info (self.set+' Total epoch time: '+ str(((time.monotonic()-self.ep_time))))
 
         return eval_measure
@@ -250,6 +257,11 @@ class Logger():
         true_classes_np = true_classes.detach().cpu().numpy()
 
         return average_precision_score(true_classes_np, predictions_np)
+
+    def get_AUC(self, predictions, true_classes):
+        predictions_np = probs.detach().cpu().numpy()
+        true_classes_np = true_classes.detach().cpu().numpy()
+        return roc_auc_score(true_classes_np, predictions_np)
 
     def eval_predicitions(self, predictions, true_classes, num_classes):
         predicted_classes = predictions.argmax(dim=1)

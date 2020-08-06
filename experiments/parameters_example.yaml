@@ -24,7 +24,7 @@ dev_proportion: 0.1
 num_epochs: 100
 steps_accum_gradients: 1
 learning_rate: 0.005
-negative_mult_training: 50
+negative_mult_training: 100
 negative_mult_test: 100
 smart_neg_sampling: True
 seed: 1234
