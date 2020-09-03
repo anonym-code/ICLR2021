@@ -70,6 +70,7 @@ class Trainer:
                     epochs_without_impr += 1
                     if epochs_without_impr > self.args.early_stop_patience:
                         print('### w' + ') ep ' + str(e) + ' - Early stop.')
+                        print('best auc {}, best ap {}'.format(self.logger.best_auc, self.logger.best_ap))
                         break
 
             if len(self.splitter.test) > 0 and e > self.args.eval_after_epochs:

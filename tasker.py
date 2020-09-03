@@ -137,7 +137,7 @@ class Link_Pred_Tasker:
         hist_adj_list = []
         existing_nodes = []
         if self.args.fft:
-            for i in range(idx + 1):
+            for i in range(idx - self.args.num_hist_steps + 1, idx + 1):
                 cur_adj = tu.get_sp_adj(edges=self.data.edges,
                                         time=i,
                                         weighted=True,
