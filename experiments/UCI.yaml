@@ -14,7 +14,7 @@ model: EGNNC
 
 task: link_pred
 
-class_weights: [0.02, 0.98]
+class_weights: [0.05, 0.95]
 
 save_node_embeddings: False
 
@@ -34,8 +34,8 @@ negative_mult_test: 200
 smart_neg_sampling: True
 seed: 1234
 target_measure: MAP # measure to define the best epoch F1, Precision, Recall, MRR, MAP
-target_class: 1 # Target class to get the measure to define the best epoch (all, 0, 1)
-early_stop_patience: 50
+target_class: All # Target class to get the measure to define the best epoch (all, 0, 1)
+early_stop_patience: 200
 
 eval_after_epochs: 5
 adj_mat_time_window: 1  # Time window to create the adj matrix for each timestep. Use None to use all the history (from 0 to t)
