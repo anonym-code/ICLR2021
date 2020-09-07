@@ -11,7 +11,6 @@ feats_per_node: 128
 use_cuda: True
 use_logfile: True # If True save the output in a log file, if False in stdout
 
-gcn: egnnc
 model: egnnc
 task: link_pred  # Help: link_pred, edge_cls or node_cls
 hidden_feats: 128
@@ -39,7 +38,7 @@ num_hist_steps: 10
 
 data_loading_params:
   batch_size: 1  # should be always 1
-  num_workers: 10
+  num_workers: 0
 
 gcn_parameters:
   cls_feats: 100 # Hidden size of the classifier

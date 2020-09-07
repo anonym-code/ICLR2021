@@ -40,12 +40,9 @@ class Logger():
         self.args = args
         self.best_auc = 0.4
         self.best_ap = -1
-        self.avg_train_time = 0
-        self.num_train_epoch =0
-        self.avg_valid_time =0
-        self.num_valid_epoch =0
-        self.avg_test_time =0
-        self.num_test_epoch =0
+        self.train_time = []
+        self.valid_time = []
+        self.test_time = []
 
 
     def get_log_file_name(self):
@@ -226,14 +223,11 @@ class Logger():
         e_time = time.monotonic() - self.ep_time
         logging.info (self.set+' Total epoch time: '+ str(((time.monotonic()-self.ep_time))))
         if self.set == 'TEST':
-            self.avg_test_time = (self.avg_test_time * self.num_test_epoch +e_time)/(self.num_test_epoch+1)
-            self.num_test_epoch = self.num_test_epoch + 1
+            self.test_time.append(e_time)
         elif self.set == 'VALID':
-            self.avg_valid_time = (self.avg_valid_time * self.num_valid_epoch +e_time)/(self.num_valid_epoch+1)
-            self.num_valid_epoch = self.num_valid_epoch + 1
+            self.valid_time.append(e_time)
         elif  self.set == 'TRAIN':
-            self.avg_valid_time = (self.avg_valid_time * self.num_valid_epoch +e_time)/(self.num_valid_epoch+1)
-            self.num_valid_epoch = self.num_valid_epoch + 1
+            self.train_time.append(e_time)
         return epoch_AUC
 
     def get_MRR(self,predictions,true_classes, adj ,do_softmax=False):
@@ -387,3 +381,22 @@ class Logger():
         epoch_metric_val = epoch_metric_val.sum()/batch_sizes.sum()
 
         return epoch_metric_val.detach().item()
+
+    def report_time(self):
+        logging.info('train time {}, valid time {}, test time {}'.format(np.mean(self.train_time),
+                                                                         np.mean(self.valid_time),
+                                                                         np.mean(self.test_time)
+                                                                        ))
+                                                                        
+        logging.info('train time std {}, valid time std {}, test time std {}'.format(np.std(self.train_time),
+                                                                         np.std(self.valid_time),
+                                                                         np.std(self.test_time)
+                                                                        ))
+        print('train time {}, valid time {}, test time {}'.format(np.mean(self.train_time),
+                                                                         np.mean(self.valid_time),
+                                                                         np.mean(self.test_time)
+                                                                        ))
+        print('train time std {}, valid time std {}, test time std {}'.format(np.std(self.train_time),
+                                                                         np.std(self.valid_time),
+                                                                         np.std(self.test_time)
+                                                                        ))

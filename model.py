@@ -30,6 +30,7 @@ class EGNNC(nn.Module):
         self.normalize = normalize
 
     def forward(self, E, node_ids, node_feature=None):
+        E = E.cuda()
         if node_feature != None:
             X = node_feature
         else:

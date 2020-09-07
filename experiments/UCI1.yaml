@@ -9,7 +9,7 @@ uc_irc_args:
 
 use_cuda: True
 use_logfile: True
-model: egnnc
+model: egnncsp
 task: link_pred
 
 class_weights: [0.05, 0.95]
@@ -22,7 +22,7 @@ fft: False
 hidden_feats: 128
 gcn_out_feats: 256
 feats_per_node: 128
-num_epochs: 100 #number of passes though the data
+num_epochs: 1000 #number of passes though the data
 steps_accum_gradients: 1
 learning_rate: 0.001
 learning_rate_min: 0.0005
@@ -33,7 +33,7 @@ smart_neg_sampling: True
 seed: 1234
 target_measure: MAP # measure to define the best epoch F1, Precision, Recall, MRR, MAP
 target_class: All # Target class to get the measure to define the best epoch (all, 0, 1)
-early_stop_patience: 50
+early_stop_patience: 200
 
 eval_after_epochs: 5
 adj_mat_time_window: 1  # Time window to create the adj matrix for each timestep. Use None to use all the history (from 0 to t)
