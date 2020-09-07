@@ -10,7 +10,7 @@ feats_per_node: 128
 use_cuda: True
 use_logfile: True # If True save the output in a log file, if False in stdout
 
-gcn: egnncsp
+model: egnnc
 task: link_pred  # Help: link_pred, edge_cls or node_cls
 hidden_feats: 128
 gcn_out_feats: 256
@@ -39,7 +39,7 @@ num_hist_steps_min: 1 # only used if num_hist_steps: None
 num_hist_steps_max: 10 # only used if num_hist_steps: None
 
 data_loading_params:
-  batch_size: 1  # should be always 1
+  batch_size: 0  # should be always 1
   num_workers: 8
 
 gcn_parameters:
