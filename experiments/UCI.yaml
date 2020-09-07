@@ -9,9 +9,7 @@ uc_irc_args:
 
 use_cuda: True
 use_logfile: True
-
-model: EGNNC
-
+model: egnncsp
 task: link_pred
 
 class_weights: [0.05, 0.95]

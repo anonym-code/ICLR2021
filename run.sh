@@ -1,1 +1,1 @@
-CUDA_VISIBLE_DEVICES=2 python main.py --config_file ./experiments/parameters_uc_irv_mess_egcn_o.yaml
+CUDA_VISIBLE_DEVICES=3 python main.py --config_file ./experiments/parameters_example.yaml

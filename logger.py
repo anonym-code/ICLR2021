@@ -40,6 +40,12 @@ class Logger():
         self.args = args
         self.best_auc = 0.4
         self.best_ap = -1
+        self.avg_train_time = 0
+        self.num_train_epoch =0
+        self.avg_valid_time =0
+        self.num_valid_epoch =0
+        self.avg_test_time =0
+        self.num_test_epoch =0
 
 
     def get_log_file_name(self):
@@ -200,22 +206,34 @@ class Logger():
         #         else:
         #             eval_measure = cl_f1
 
-        for k in self.eval_k_list: #logging.info(self.set+' @%d tp %s,fn %s,fp %s' % (k, self.conf_mat_tp_at_k[k], self.conf_mat_fn_at_k[k], self.conf_mat_fp_at_k[k]))
-            precision, recall, f1 = self.calc_microavg_eval_measures(self.conf_mat_tp_at_k[k], self.conf_mat_fn_at_k[k], self.conf_mat_fp_at_k[k])
-            logging.info (self.set+' measures@%d microavg - precision %0.4f - recall %0.4f - f1 %0.4f ' % (k,precision,recall,f1))
+        # for k in self.eval_k_list: #logging.info(self.set+' @%d tp %s,fn %s,fp %s' % (k, self.conf_mat_tp_at_k[k], self.conf_mat_fn_at_k[k], self.conf_mat_fp_at_k[k]))
+        #     precision, recall, f1 = self.calc_microavg_eval_measures(self.conf_mat_tp_at_k[k], self.conf_mat_fn_at_k[k], self.conf_mat_fp_at_k[k])
+        #     #logging.info (self.set+' measures@%d microavg - precision %0.4f - recall %0.4f - f1 %0.4f ' % (k,precision,recall,f1))
 
-            for cl in range(self.num_classes):
-                cl_precision, cl_recall, cl_f1 = self.calc_eval_measures_per_class(self.conf_mat_tp_at_k[k], self.conf_mat_fn_at_k[k], self.conf_mat_fp_at_k[k], cl)
-                logging.info (self.set+' measures@%d for class %d - precision %0.4f - recall %0.4f - f1 %0.4f ' % (k, cl,cl_precision,cl_recall,cl_f1))
+            # for cl in range(self.num_classes):
+            #     cl_precision, cl_recall, cl_f1 = self.calc_eval_measures_per_class(self.conf_mat_tp_at_k[k], self.conf_mat_fn_at_k[k], self.conf_mat_fp_at_k[k], cl)
+            #     #logging.info (self.set+' measures@%d for class %d - precision %0.4f - recall %0.4f - f1 %0.4f ' % (k, cl,cl_precision,cl_recall,cl_f1))
         if self.best_ap < epoch_MAP and self.set == 'TEST':
             self.best_ap = epoch_MAP
             print('best test_ap:{}'.format(self.best_ap))
+            logging.info('best test_ap:{}'.format(self.best_ap))
         if self.best_auc < epoch_AUC and self.set == 'TEST':
             self.best_auc = epoch_AUC
-            print('best best_auc:{}'.format(self.best_auc))
+            print('best test_auc:{}'.format(self.best_auc))
+            logging.info('best test_auc:{}'.format(self.best_auc))
         print('{} epochs:{}, mean_loss: {}, MAP: {},  AUC: {}'.format(self.set, self.epoch, self.losses.mean(), epoch_MAP, epoch_AUC))
-        #logging.info (self.set+' Total epoch time: '+ str(((time.monotonic()-self.ep_time))))
-
+        logging.info('{} epochs:{}, mean_loss: {}, MAP: {},  AUC: {}'.format(self.set, self.epoch, self.losses.mean(), epoch_MAP, epoch_AUC))
+        e_time = time.monotonic() - self.ep_time
+        logging.info (self.set+' Total epoch time: '+ str(((time.monotonic()-self.ep_time))))
+        if self.set == 'TEST':
+            self.avg_test_time = (self.avg_test_time * self.num_test_epoch +e_time)/(self.num_test_epoch+1)
+            self.num_test_epoch = self.num_test_epoch + 1
+        elif self.set == 'VALID':
+            self.avg_valid_time = (self.avg_valid_time * self.num_valid_epoch +e_time)/(self.num_valid_epoch+1)
+            self.num_valid_epoch = self.num_valid_epoch + 1
+        elif  self.set == 'TRAIN':
+            self.avg_valid_time = (self.avg_valid_time * self.num_valid_epoch +e_time)/(self.num_valid_epoch+1)
+            self.num_valid_epoch = self.num_valid_epoch + 1
         return epoch_AUC
 
     def get_MRR(self,predictions,true_classes, adj ,do_softmax=False):

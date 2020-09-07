@@ -71,6 +71,7 @@ class Trainer:
                     if epochs_without_impr > self.args.early_stop_patience:
                         print('### w' + ') ep ' + str(e) + ' - Early stop.')
                         print('best auc {}, best ap {}'.format(self.logger.best_auc, self.logger.best_ap))
+                        print('avg train time {}, avg valid time {}, avg test time {}'.format(self.logger.avg_train_time, self.logger.avg_valid_time, self.logger.avg_test_time))
                         break
 
             if len(self.splitter.test) > 0 and e > self.args.eval_after_epochs:
@@ -80,6 +81,8 @@ class Trainer:
                     self.save_node_embs_csv(nodes_embs, self.splitter.train_idx, log_file + '_train_nodeembs.csv.gz')
                     self.save_node_embs_csv(nodes_embs, self.splitter.dev_idx, log_file + '_valid_nodeembs.csv.gz')
                     self.save_node_embs_csv(nodes_embs, self.splitter.test_idx, log_file + '_test_nodeembs.csv.gz')
+        print('avg train time {}, avg valid time {}, avg test time {}'.format(self.logger.avg_train_time, self.logger.avg_valid_time, self.logger.avg_test_time))
+
 
     def run_epoch(self, split, epoch, set_name, grad):
         t0 = time.time()
@@ -123,10 +126,11 @@ class Trainer:
         else:
             self.gcn.train()
         if node_feature == 1:
-            nodes_embs = self.gcn(edge_feature.to(self.args.device), torch.arange(self.tasker.data.num_nodes).to(self.args.device))
+            nodes_embs = self.gcn(edge_feature, torch.arange(self.tasker.data.num_nodes).to(self.args.gcn_device))
         else:
-            nodes_embs = self.gcn(edge_feature.to(self.args.device), torch.arange(self.tasker.data.num_nodes).to(self.args.device),
-                                  node_feature.to(self.args.device))
+            nodes_embs = self.gcn(edge_feature, torch.arange(self.tasker.data.num_nodes).to(self.args.gcn_device),
+                                  node_feature.to(self.args.gcn_device))
+        nodes_embs = nodes_embs.to(self.args.device)
         predict_batch_size = 100000
         gather_predictions = []
         for i in range(1 + (node_indices.size(1) // predict_batch_size)):
@@ -151,7 +155,8 @@ class Trainer:
 
     def prepare_sample(self, sample):
         sample = u.Namespace(sample)
-        sample.edge_feature = sample.edge_feature.squeeze()
+        if self.args.model == 'egnnc':
+            sample.edge_feature = sample.edge_feature.squeeze()
         label_sp = self.ignore_batch_dim(sample.label_sp)
 
         if self.args.task in ["link_pred", "edge_cls"]:
