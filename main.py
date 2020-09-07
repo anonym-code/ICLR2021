@@ -1,5 +1,5 @@
 from datasets import UCI, sbm, Reddit, Elliptic, Bitcoin, AS
-from model import EGNNC, Classifier
+from model import EGNNCSp, EGNNC, Classifier
 from splitter import splitter
 from trainer import Trainer
 from tasker import Edge_Cls_Tasker, Node_Cls_Tasker, Link_Pred_Tasker
@@ -51,17 +51,25 @@ if __name__ == '__main__':
     args = u.parse_args(parser)
 
     args.device = 'cuda'
+    args.gcn_device = 'cuda'
 
     dataset = build_dataset(args)
     tasker = build_tasker(args, dataset)
     splitter = splitter(args, tasker)
-    gcn = EGNNC(args.feats_per_node,
-                args.hidden_feats,
-                args.gcn_out_feats,
-                args.num_hist_steps,
-                tasker.data.num_nodes).to(args.device)
+    if args.model == 'egnncsp':
+        gcn = EGNNCSp(args.feats_per_node,
+                    args.hidden_feats,
+                    args.gcn_out_feats,
+                    args.num_hist_steps,
+                    tasker.data.num_nodes).to(args.gcn_device)
+    else:
+        gcn = EGNNC(args.feats_per_node,
+                    args.hidden_feats,
+                    args.gcn_out_feats,
+                    args.num_hist_steps,
+                    tasker.data.num_nodes).to(args.gcn_device)
     classifier = build_classifier(args, tasker)
-    loss = ce.Cross_Entropy(args, dataset).to('cuda')
+    loss = ce.Cross_Entropy(args, dataset).to(args.device)
     trainer = Trainer(args,
                       splitter=splitter,
                       gcn=gcn,
