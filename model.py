@@ -79,19 +79,22 @@ class EGNNCSp(nn.Module):
         self.lin = nn.Linear(out_dim*edge_dim, out_dim)
 
     def forward(self, edge_index_list,node_ids, node_feature=None):
-        if node_feature:
-            x = node_feature
+        if node_feature != None:
+            x = node_feature.cuda().squeeze()
         else:
             x = self.embed(node_ids)
         results = []
         for index in edge_index_list:
-            edge_index = index._indices()[1:].cuda()
-            edge_weight = index._values().float().cuda()
-            
+            edge_index = index['idx'].T.cuda()
+            edge_weight = index['vals'].T.float().cuda()
+            # print(edge_index.size(),edge_weight.size())
+            # print(x.size())
             n_x = self.Conv(x, edge_index, edge_weight=edge_weight)
             # newx = torch.zeros(num_node, out_dim)
             # newx[edge_index[1]] = n_x
             results.append(n_x)        
 
         nn_x = torch.cat(results, dim=1)
+        # print(results.size())
+        # print(nn_x.size())
         return self.lin(nn_x)

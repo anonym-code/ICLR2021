@@ -1,1 +1,1 @@
-CUDA_VISIBLE_DEVICES=3 python main.py --config_file ./experiments/as1.yaml
+CUDA_VISIBLE_DEVICES=0 python main.py --config_file ./experiments/UCI.yaml

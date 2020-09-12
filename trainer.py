@@ -71,7 +71,6 @@ class Trainer:
                     if epochs_without_impr > self.args.early_stop_patience:
                         print('### w' + ') ep ' + str(e) + ' - Early stop.')
                         print('best auc {}, best ap {}'.format(self.logger.best_auc, self.logger.best_ap))
-                        print('avg train time {}, avg valid time {}, avg test time {}'.format(self.logger.avg_train_time, self.logger.avg_valid_time, self.logger.avg_test_time))
                         self.logger.report_time()
 
                         break
@@ -83,6 +82,8 @@ class Trainer:
                     self.save_node_embs_csv(nodes_embs, self.splitter.train_idx, log_file + '_train_nodeembs.csv.gz')
                     self.save_node_embs_csv(nodes_embs, self.splitter.dev_idx, log_file + '_valid_nodeembs.csv.gz')
                     self.save_node_embs_csv(nodes_embs, self.splitter.test_idx, log_file + '_test_nodeembs.csv.gz')
+        print('best auc {}, best ap {}'.format(self.logger.best_auc, self.logger.best_ap))
+
         self.logger.report_time()
 
 
@@ -127,11 +128,11 @@ class Trainer:
             self.gcn.eval()
         else:
             self.gcn.train()
-        if node_feature == 1:
-            nodes_embs = self.gcn(edge_feature, torch.arange(self.tasker.data.num_nodes).to(self.args.gcn_device))
-        else:
+        if self.args.task != 'link_pred':
             nodes_embs = self.gcn(edge_feature, torch.arange(self.tasker.data.num_nodes).to(self.args.gcn_device),
-                                  node_feature.to(self.args.gcn_device))
+                                    node_feature)
+        else:
+            nodes_embs = self.gcn(edge_feature, torch.arange(self.tasker.data.num_nodes).to(self.args.gcn_device))
         nodes_embs = nodes_embs.to(self.args.device)
         predict_batch_size = 100000
         gather_predictions = []
