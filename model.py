@@ -85,9 +85,8 @@ class EGNNCSp(nn.Module):
             x = self.embed(node_ids)
         results = []
         for index in edge_index_list:
-            edge_index = index._indices()[1:].cuda()
-            edge_weight = index._values().float().cuda()
-            
+            edge_index = index['idx'].T.cuda()
+            edge_weight = index['vals'].T.float().cuda()
             n_x = self.Conv(x, edge_index, edge_weight=edge_weight)
             # newx = torch.zeros(num_node, out_dim)
             # newx[edge_index[1]] = n_x

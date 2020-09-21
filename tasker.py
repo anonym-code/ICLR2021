@@ -197,7 +197,7 @@ class Link_Pred_Tasker:
             label_adj['vals'] = torch.cat([label_adj['vals'], non_exisiting_adj['vals']])
             return {'idx': idx,
                     'concate_adj': concate_adj,
-                    'edge_feature': edge_feature.cuda(),
+                    'edge_feature': edge_feature,
                     'label_sp': label_adj,
                     'node_feature': 1}
 
@@ -214,7 +214,7 @@ class Link_Pred_Tasker:
 
                     #node_mask = tu.get_node_mask(cur_adj, self.data.num_nodes)
 
-                    cur_adj = torch.sparse.LongTensor(cur_adj['idx'].T, cur_adj['vals'])
+                    # cur_adj = {'idx':cur_adj['idx'], 'val':cur_adj['val']}
                     hist_adj_list.append(cur_adj)
 
             # This would be if we were training on all the edges in the time_window

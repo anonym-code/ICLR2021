@@ -27,7 +27,7 @@ steps_accum_gradients: 1
 learning_rate: 0.001
 learning_rate_min: 0.0005
 learning_rate_max: 0.1
-negative_mult_training: 200
+negative_mult_training: 400
 negative_mult_test: 200
 smart_neg_sampling: True
 seed: 1234
@@ -37,7 +37,7 @@ early_stop_patience: 50
 
 eval_after_epochs: 5
 adj_mat_time_window: 1  # Time window to create the adj matrix for each timestep. Use None to use all the history (from 0 to t)
-num_hist_steps: 10 # number of previous steps used for prediction
+num_hist_steps: 18 # number of previous steps used for prediction
 
 data_loading_params:
   batch_size: 1

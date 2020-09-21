@@ -21,7 +21,7 @@ fft: False
 train_proportion: 0.7
 dev_proportion: 0.1
 
-num_epochs: 100
+num_epochs: 20
 steps_accum_gradients: 1
 learning_rate: 0.005
 negative_mult_training: 1000
@@ -39,8 +39,8 @@ num_hist_steps_min: 1 # only used if num_hist_steps: None
 num_hist_steps_max: 10 # only used if num_hist_steps: None
 
 data_loading_params:
-  batch_size: 0  # should be always 1
-  num_workers: 8
+  batch_size: 1  # should be always 1
+  num_workers: 10
 
 gcn_parameters:
   cls_feats: 100 # Hidden size of the classifier
