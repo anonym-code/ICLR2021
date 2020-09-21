@@ -225,9 +225,8 @@ def get_non_existing_edges(adj,number, tot_nodes, smart_sampling, existing_nodes
             return edges
 
     edges = sample_edges(num_edges*4)
-
+    #print(edges)
     edge_ids = edges[0] * tot_nodes + edges[1]
-    
     out_ids = set()
     num_sampled = 0
     sampled_indices = []

@@ -39,7 +39,8 @@ early_stop_patience: 100
 
 eval_after_epochs: 5
 adj_mat_time_window: 1  # Time window to create the adj matrix for each timestep. Use None to use all the history (from 0 to t)
-num_hist_steps: 16 # number of previous steps used for prediction
+num_hist_steps: 10 # number of previous steps used for prediction
+hist_steps: 12
 
 data_loading_params:
   batch_size: 1

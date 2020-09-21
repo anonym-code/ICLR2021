@@ -24,7 +24,8 @@ class UCI:
         cols = u.Namespace({'source': 0,
                             'target': 1,
                             'weight': 2,
-                            'time': 3})
+                            'time': 3,
+                            })
 
         data = data.long()
 
@@ -63,7 +64,7 @@ class sbm:
         self.ecols = u.Namespace({'FromNodeId': 0,
                                   'ToNodeId': 1,
                                   'Weight': 2,
-                                  'TimeStep': 3
+                                  'TimeStep': 3,
                                   })
         args.sbm_args = u.Namespace(args.sbm_args)
 
