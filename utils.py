@@ -5,6 +5,7 @@ import numpy as np
 import time
 import random
 import math
+import cmath as cm
 
 def pad_with_last_col(matrix,cols):
     out = [matrix]
@@ -163,3 +164,57 @@ def DS_normalize(edge_feature):
     E2 = E1 / torch.sum(E1, 0, keepdim=True)
     normalizedE = torch.einsum('ikp,jkp->ijp', E1, E2)
     return normalizedE
+
+
+def dtft(x1, N):
+
+    x = x1
+    j = cm.sqrt(-1)
+    le = len(x1)
+    n = np.arange(le)
+    X = torch.zeros(N)
+
+    w = np.linspace(0, 2 * np.pi, N)
+    for i in range(0,N):
+        w_ = w[i]
+
+        X_tmp = np.sum([x[k]*np.exp(-n[k]*w_*j)/np.sqrt(le) for k in range(0,len(x))])
+        X[i] = abs(X_tmp).astype(np.float64)
+    return X
+
+def DTFTSp(X, N):
+
+    num_node = X.shape[0]
+    hist_step = X.shape[2]
+    R = torch.zeros(num_node, num_node, N)
+    for i in range(num_node):
+        for j in range(num_node):
+            if np.all(X[i,j]==0):
+                continue
+            else:
+                R[i,j] = dtft(X[i,j], N)
+    R = R.permute(2,0,1)
+    hist_ = []
+    for i in range(N):
+        r_sparse = R[i].to_sparse()
+        ind = r_sparse._indices()
+        val = r_sparse._values()
+        cur_adj = {'idx':ind.T.squeeze(), 'vals':val.squeeze()}
+        hist_.append(cur_adj)
+    return hist_
+
+def DTFT(X, N):
+    num_node = X.shape[0]
+    hist_step = X.shape[2]
+    res = []
+    for i in range(num_node):
+        for j in range(num_node):
+            if np.all(X[i,j]==0):
+                res.append([0] * N)
+            else:
+                x1 = [X[i,j], np.arange(0,hist_step)]
+                X1 = dtft(x1, N)
+                res.append(X1)
+    R = torch.Tensor(res).view(num_node,num_node,N)
+    R = R.permute(2,0,1)
+    return R

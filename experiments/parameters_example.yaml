@@ -39,8 +39,13 @@ num_hist_steps_min: 1 # only used if num_hist_steps: None
 num_hist_steps_max: 10 # only used if num_hist_steps: None
 
 data_loading_params:
+<<<<<<< HEAD
   batch_size: 1 # should be always 1
   num_workers: 10
+=======
+  batch_size: 0  # should be always 1
+  num_workers: 8
+>>>>>>> 6b0fcad838f15c2e31807a46fde589b89552670e
 
 gcn_parameters:
   cls_feats: 100 # Hidden size of the classifier

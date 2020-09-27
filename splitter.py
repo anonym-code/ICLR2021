@@ -7,7 +7,11 @@ class splitter:
         assert args.train_proportion + args.dev_proportion < 1, \
             'there\'s no space for test samples'
         # only the training one requires special handling on start, the others are fine with the split IDX.
+<<<<<<< HEAD
         start = tasker.data.min_time + 20 - 1  # -1 + args.adj_mat_time_window
+=======
+        start = tasker.data.min_time + args.hist_steps - 1  # -1 + args.adj_mat_time_window
+>>>>>>> 6b0fcad838f15c2e31807a46fde589b89552670e
         end = args.train_proportion
 
         end = int(np.floor(tasker.data.max_time.type(torch.float) * end))

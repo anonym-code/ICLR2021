@@ -21,16 +21,25 @@ save_node_embeddings: False
 train_proportion: 0.7
 dev_proportion: 0.1
 fft: False
+<<<<<<< HEAD
 dft: False
 num_epochs: 50
 steps_accum_gradients: 1
 learning_rate: 0.005
 negative_mult_training: 400
+=======
+dft: True
+fft_num_steps: 10
+num_epochs: 40
+steps_accum_gradients: 1
+learning_rate: 0.005
+negative_mult_training: 1800
+>>>>>>> 6b0fcad838f15c2e31807a46fde589b89552670e
 negative_mult_test: 100
 smart_neg_sampling: True
 seed: 1234
 target_measure: MAP # measure to define the best epoch F1, Precision, Recall, MRR, MAP
-target_class: 1 # Target class to get the measure to define the best epoch (all, 0, 1)
+target_class: all # Target class to get the measure to define the best epoch (all, 0, 1)
 early_stop_patience: 50
 
 eval_after_epochs: 5 # Epoch for the first validation (avoid the first epochs to save time)
@@ -39,7 +48,7 @@ num_hist_steps: 10
 
 data_loading_params:
   batch_size: 1  # should be always 1
-  num_workers: 10
+  num_workers: 0
 
 gcn_parameters:
   cls_feats: 100 # Hidden size of the classifier

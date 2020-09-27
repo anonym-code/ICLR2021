@@ -56,17 +56,32 @@ if __name__ == '__main__':
     dataset = build_dataset(args)
     tasker = build_tasker(args, dataset)
     splitter = splitter(args, tasker)
+<<<<<<< HEAD
+=======
+    if args.fft or args.dft:
+        tim_dim = args.fft_num_steps
+    else:
+        tim_dim = args.num_hist_steps
+>>>>>>> 6b0fcad838f15c2e31807a46fde589b89552670e
     if args.model == 'egnncsp':
         gcn = EGNNCSp(args.feats_per_node,
                     args.hidden_feats,
                     args.gcn_out_feats,
+<<<<<<< HEAD
                     args.num_hist_steps,
+=======
+                    tim_dim,
+>>>>>>> 6b0fcad838f15c2e31807a46fde589b89552670e
                     tasker.data.num_nodes).to(args.gcn_device)
     else:
         gcn = EGNNC(args.feats_per_node,
                     args.hidden_feats,
                     args.gcn_out_feats,
+<<<<<<< HEAD
                     args.num_hist_steps,
+=======
+                    tim_dim,
+>>>>>>> 6b0fcad838f15c2e31807a46fde589b89552670e
                     tasker.data.num_nodes).to(args.gcn_device)
     classifier = build_classifier(args, tasker)
     loss = ce.Cross_Entropy(args, dataset).to(args.device)
