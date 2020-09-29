@@ -1,14 +1,5 @@
-<<<<<<< HEAD
-/data/s*
-/data/r*
-/data/w*
-/data/o*
-.DS_Store
-.idea/
-=======
 /data/*
 .DS_Store
 .idea/*
->>>>>>> 6b0fcad838f15c2e31807a46fde589b89552670e
 /log/*
 __pycache__/
