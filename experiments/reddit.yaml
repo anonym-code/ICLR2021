@@ -1,0 +1,98 @@
+data: reddit
+
+
+
+reddit_args:
+
+  folder: ./data/reddit
+
+  title_edges_file: soc-redditHyperlinks-title.tsv
+
+  body_edges_file: soc-redditHyperlinks-body.tsv
+
+  nodes_file: web-redditEmbeddings-subreddits.csv
+
+  aggr_time: 7 #number of days
+
+
+
+use_cuda: True
+
+use_logfile: True
+
+
+
+gcn: egnnc
+
+
+
+task: edge_cls
+
+
+
+class_weights: [0.9, 0.1]
+
+
+
+save_node_embeddings: False
+
+
+
+train_proportion: 0.71
+
+dev_proportion: 0.1
+
+fft: False
+dft: False
+
+hidden_feats: 128
+
+gcn_out_feats: 256
+
+feats_per_node: 128
+
+num_epochs: 1000 #number of passes though the data
+
+steps_accum_gradients: 1
+
+learning_rate: 0.001
+
+learning_rate_min: 0.0005
+
+learning_rate_max: 0.1
+
+negative_mult_training: 5
+
+negative_mult_test: 5
+
+smart_neg_sampling: False
+
+seed: 1234
+
+target_measure: AUC # measure to define the best epoch F1, Precision, Recall, MRR, MAP
+
+target_class: all # Target class to get the measure to define the best epoch (all, 0, 1)
+
+early_stop_patience: 100
+
+
+
+eval_after_epochs: 5
+
+adj_mat_time_window: 1  # Time window to create the adj matrix for each timestep. Use None to use all the history (from 0 to t)
+
+num_hist_steps: 5 # number of previous steps used for prediction
+hist_steps: 5
+
+
+data_loading_params:
+
+  batch_size: 1
+
+  num_workers: 0
+
+
+
+gcn_parameters:
+
+  cls_feats: 100  # Hidden size of the classifier
